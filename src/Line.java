@@ -21,6 +21,18 @@ public class Line {
 
     private int givenForm;
 
+    public SlopeIntercept getInSIForm() {
+        return inSIForm;
+    }
+
+    public StandardForm getInSForm() {
+        return inSForm;
+    }
+
+    public PointSlope getInPSForm() {
+        return inPSForm;
+    }
+
     public Line(String s)
     {
         enteredString = s;
@@ -80,5 +92,13 @@ public class Line {
         Fraction xinF = new Fraction(x);
         Fraction yinF = new Fraction(y);
         return inSIForm.getM().multiply(xinF).add(inSIForm.getB()).equals(yinF);
+    }
+    public Coordinates intersectionPoint(Line l)
+    {
+        Fraction combinedConstants = inSIForm.getB().subtract(l.getInSIForm().getB());
+        Fraction combinedCoefficients = l.getInSIForm().getM().subtract(inSIForm.getM());
+        Fraction xIntersect = new Fraction(combinedConstants, combinedCoefficients);
+        Fraction yIntersect = inSIForm.getM().multiply(xIntersect).add(inSIForm.getB());
+        return new Coordinates(xIntersect, yIntersect);
     }
 }

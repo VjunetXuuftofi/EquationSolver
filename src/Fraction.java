@@ -32,6 +32,14 @@ public class Fraction
         //Alternate constructor handles whole numbers
         myNumer = numerator;
         myDenom = 1;
+        simplify();
+    }
+    public Fraction(Fraction numerator, Fraction denominator)
+    {
+        //Alternate constructor handles whole numbers
+        myNumer = numerator.getMyNumer() * denominator.getMyDenom();
+        myDenom = numerator.getMyDenom() * denominator.getMyNumer();
+        simplify();
     }
 
     public Fraction (String s)
@@ -56,6 +64,7 @@ public class Fraction
             myNumer = Integer.parseInt(s);
             myDenom = 1;
         }
+        simplify();
     }
     //Get Methods
     public int getMyNumer()
@@ -173,7 +182,7 @@ public class Fraction
         //Subtracts one fraction from another and returns the result.
         if (myDenom == f.getMyDenom())
         {
-            return new Fraction(myNumer + f.getMyNumer(), myDenom);
+            return new Fraction(myNumer - f.getMyNumer(), myDenom);
         }
         else
         {
