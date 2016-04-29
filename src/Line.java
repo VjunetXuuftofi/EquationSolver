@@ -1,16 +1,16 @@
 /**
  * Created by thomaswoodside on 4/25/16.
  */
+import java.awt.*;
 import java.util.regex.*;
-import javax.script.*;
 
 public class Line {
     private static final Pattern slopeIntercept =
-            Pattern.compile("y ?= ?(-?(\\d|/)*)x( ?(\\+|-) ?(\\d|/)*)?");
+            Pattern.compile("y ?= ?(-? ?(\\d|/)*)x( ?(\\+|-) ?(\\d|/)*)?");
     private static final Pattern standard =
-            Pattern.compile("((\\d)*)x( ?((\\+|-) ?(\\d)*)y ?)?= ?(-? ?(\\d)*)");
+            Pattern.compile("((\\d)*)x ?(((\\+|-) ?(\\d)*)y ?)?= ?(-? ?(\\d)*)");
     private static final Pattern pointSlope =
-            Pattern.compile("y( ?(-|\\+) ?(\\d|/)*)? ?= ?-?(\\d|/)*\\(x( ?(\\+|-) ?(\\d|/)*)?\\)");
+            Pattern.compile("y( ?(-|\\+) ?(\\d|/)*)? ?= ?-? ?(\\d|/)*\\(x( ?(\\+|-) ?(\\d|/)*)?\\)");
     private String enteredString;
     private Matcher slopeInterceptMatch;
     private Matcher standardMatch;
@@ -62,22 +62,75 @@ public class Line {
     {
         if (givenForm == 0)
         {
-            inSIForm = new SlopeIntercept(new Fraction(slopeInterceptMatch.group(1).replaceAll(" ", "")),
-                    new Fraction(slopeInterceptMatch.group(3).replaceAll(" ", "")));
+            Fraction slope;
+            try {
+                slope = new Fraction(slopeInterceptMatch.group(1).replaceAll(" ", ""));
+            } catch (NullPointerException e)
+            {
+                slope = new Fraction(0);
+            }
+            Fraction intercept;
+            try {
+                intercept = new Fraction(slopeInterceptMatch.group(3).replaceAll(" ", ""));
+            } catch (NullPointerException e)
+            {
+                intercept = new Fraction(0);
+            }
+
+            inSIForm = new SlopeIntercept(slope, intercept);
             inSForm = inSIForm.toStandardForm();
         }
         else if (givenForm == 1)
         {
-            inSForm = new StandardForm(new Fraction(standardMatch.group(1).replaceAll(" ", "")),
-                    new Fraction(standardMatch.group(4).replaceAll(" ", "")),
-                    new Fraction(standardMatch.group(7).replaceAll(" ", "")));
+            Fraction A;
+            try {
+                A = new Fraction(standardMatch.group(1).replaceAll(" ", ""));
+            } catch (NullPointerException e)
+            {
+                A = new Fraction(0);
+            }
+            Fraction B;
+            try {
+                B = new Fraction(standardMatch.group(4).replaceAll(" ", ""));
+            } catch (NullPointerException e)
+            {
+                B = new Fraction(0);
+            }
+            Fraction C;
+            try {
+                C = new Fraction(standardMatch.group(7).replaceAll(" ", ""));
+            } catch (NullPointerException e)
+            {
+                C = new Fraction(0);
+            }
+
+            inSForm = new StandardForm(A, B, C);
             inSIForm = inSForm.toSlopeInterceptForm();
         }
         else if (givenForm == 2)
         {
-            inPSForm = new PointSlope(new Fraction(pointSlopeMatch.group(6).replaceAll(" ", "")),
-                    new Fraction(pointSlopeMatch.group(1).replaceAll(" ", "")),
-                    new Fraction(pointSlopeMatch.group(4).replaceAll(" ", "")));
+            Fraction x;
+            try {
+                x = new Fraction(pointSlopeMatch.group(6).replaceAll(" ", ""));
+            } catch (NullPointerException e)
+            {
+                x = new Fraction(0);
+            }
+            Fraction y;
+            try {
+                y = new Fraction(pointSlopeMatch.group(1).replaceAll(" ", ""));
+            } catch (NullPointerException e)
+            {
+                y = new Fraction(0);
+            }
+            Fraction slope;
+            try {
+                slope = new Fraction(pointSlopeMatch.group(4).replaceAll(" ", ""));
+            } catch (NullPointerException e)
+            {
+                slope = new Fraction(0);
+            }
+            inPSForm = new PointSlope(x, y, slope);
             inSForm = inPSForm.toStandardForm();
             inSIForm = inPSForm.toSlopeIntercept();
         }
@@ -95,10 +148,24 @@ public class Line {
     }
     public Coordinates intersectionPoint(Line l)
     {
-        Fraction combinedConstants = inSIForm.getB().subtract(l.getInSIForm().getB());
-        Fraction combinedCoefficients = l.getInSIForm().getM().subtract(inSIForm.getM());
-        Fraction xIntersect = new Fraction(combinedConstants, combinedCoefficients);
-        Fraction yIntersect = inSIForm.getM().multiply(xIntersect).add(inSIForm.getB());
-        return new Coordinates(xIntersect, yIntersect);
+        if (inSIForm.getM().equals(l.getInSIForm().getM()))
+        {
+            return null;
+        }
+        else {
+            Fraction combinedConstants = inSIForm.getB().subtract(l.getInSIForm().getB());
+            Fraction combinedCoefficients = l.getInSIForm().getM().subtract(inSIForm.getM());
+            Fraction xIntersect = new Fraction(combinedConstants, combinedCoefficients);
+            Fraction yIntersect = inSIForm.getM().multiply(xIntersect).add(inSIForm.getB());
+            return new Coordinates(xIntersect, yIntersect);
+        }
+    }
+    public void graph(Graphics g, int xLow, int xHigh, int screenwidth)
+    {
+        int yCartStart = inSIForm.getM().multiply(xLow).add(inSIForm.getB()).toInt();
+        int yCartEnd = inSIForm.getM().multiply(xHigh).add(inSIForm.getB()).toInt();
+        Coordinates start = new Coordinates(xLow, yCartStart).mapToScreen(xLow, xHigh, screenwidth);
+        Coordinates end = new Coordinates(xHigh, yCartEnd).mapToScreen(xLow, xHigh, screenwidth);
+        g.drawLine(start.getX().toInt(), start.getY().toInt(), end.getX().toInt(), end.getY().toInt());
     }
 }

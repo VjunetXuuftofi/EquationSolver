@@ -20,6 +20,7 @@ public class Fraction
         if (denominator == 0)
         {
             System.out.println("Denominators cannot be zero.");
+            numerator = 0;
             denominator = 1;
         }
         myNumer = numerator;
@@ -52,6 +53,11 @@ public class Fraction
         else if (s.equals("-"))
         {
             myNumer = -1;
+            myDenom = 1;
+        }
+        else if (s.equals("+"))
+        {
+            myNumer = 1;
             myDenom = 1;
         }
         else if (s.contains("/"))
@@ -177,6 +183,11 @@ public class Fraction
         }
     }
 
+    public int toInt()
+    {
+        return myNumer / myDenom;
+    }
+
     public Fraction subtract(Fraction f)
     {
         //Subtracts one fraction from another and returns the result.
@@ -190,6 +201,16 @@ public class Fraction
             int denom = myDenom * f.getMyDenom();
             return new Fraction(numer, denom);
         }
+    }
+    public Fraction subtract(int i)
+    {
+        //Subtracts one fraction from another and returns the result.
+        return new Fraction(myNumer - i * myDenom, myDenom);
+    }
+    public Fraction add(int i)
+    {
+        //Subtracts one fraction from another and returns the result.
+        return new Fraction(myNumer + i * myDenom, myDenom);
     }
     public boolean isOne()
     {

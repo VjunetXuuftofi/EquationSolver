@@ -14,6 +14,10 @@ public class StandardForm {
     }
     public SlopeIntercept toSlopeInterceptForm()
     {
+        if (B.equals(new Fraction(0))) // For forms like x = 5
+        {
+            return new SlopeIntercept(new Fraction(0), C.divide(A));
+        }
         return new SlopeIntercept(A.multiply(-1).divide(B), C.divide(B));
     }
     public String toString()

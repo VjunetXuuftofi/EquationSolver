@@ -19,12 +19,19 @@ public class SlopeIntercept {
         return b;
     }
 
+
     public StandardForm toStandardForm()
     {
         int tomultiply = m.getMyDenom() * b.getMyDenom();
         Fraction A = m.multiply(tomultiply);
         Fraction C = b.multiply(tomultiply);
-        int gcd = Fraction.gcd(A.getMyNumer(), C.getMyNumer());
+        int gcd;
+        try {
+            gcd = Fraction.gcd(A.getMyNumer(), C.getMyNumer());
+        } catch (ArithmeticException e)
+        {
+            gcd = 1;
+        }
         A = A.divide(gcd).multiply(-1);
         C = C.divide(gcd);
         Fraction B = new Fraction(tomultiply / gcd);
