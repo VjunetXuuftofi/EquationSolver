@@ -1,14 +1,19 @@
 /**
- * Created by thomaswoodside on 4/26/16.
+ * SlopeInterceptLine.java
+ * Thomas Woodside
+ * May 21 2016
+ * A class to store information of lines in slope-intercept form:
+ * y = mx + b
  */
-public class SlopeIntercept {
+public class SlopeInterceptLine {
     private Fraction m;
     private Fraction b;
 
-    public SlopeIntercept (Fraction slope, Fraction intercept)
+    public SlopeInterceptLine(Fraction slope, Fraction intercept)
     {
-        this.m = slope;
-        this.b = intercept;
+        //Sample equation: y = -5x + 2
+        this.m = slope; // e.g. -5
+        this.b = intercept; //e.g. + 2
     }
 
     public Fraction getM() {
@@ -20,16 +25,19 @@ public class SlopeIntercept {
     }
 
 
-    public StandardForm toStandardForm()
+    public StandardFormLine toStandardForm()
     {
+        //Converts the equation into Standard Form.
         int tomultiply = m.getMyDenom() * b.getMyDenom();
         Fraction A = m.multiply(tomultiply);
         Fraction C = b.multiply(tomultiply);
         int gcd;
-        try {
+        try
+        {
             gcd = Fraction.gcd(A.getMyNumer(), C.getMyNumer());
         } catch (ArithmeticException e)
         {
+            //For cases when the y intercept (b) is 0.
             gcd = 1;
         }
         A = A.divide(gcd).multiply(-1);
@@ -41,7 +49,7 @@ public class SlopeIntercept {
             B = B.multiply(-1);
             C = C.multiply(-1);
         }
-        return new StandardForm(A, B, C);
+        return new StandardFormLine(A, B, C);
     }
     public String toString()
     {
@@ -49,14 +57,7 @@ public class SlopeIntercept {
         String formattedb = b.toString();
         if (m.isOne())
         {
-            if (m.getMyNumer() < 0)
-            {
-                formattedm = "-" + "";
-            }
-            else
-            {
-                formattedm = "";
-            }
+            formattedm = m.getMyNumer() < 0 ? "-" + "" : "";
         }
         if (b.getMyNumer() > 0)
         {

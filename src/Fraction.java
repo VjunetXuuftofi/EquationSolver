@@ -16,16 +16,19 @@ public class Fraction
     //Constructor Methods
     public Fraction(int numerator, int denominator)
     {
-        //Constructor. Handles division by zero and simplifies.
+        //If two ints are given
         if (denominator == 0)
         {
             System.out.println("Denominators cannot be zero.");
-            numerator = 0;
-            denominator = 1;
+            myNumer = 0;
+            myNumer = 1;
         }
-        myNumer = numerator;
-        myDenom = denominator;
-        simplify();
+        else
+        {
+            myNumer = numerator;
+            myDenom = denominator;
+            simplify();
+        }
     }
 
     public Fraction(int numerator)
@@ -37,16 +40,28 @@ public class Fraction
     }
     public Fraction(Fraction numerator, Fraction denominator)
     {
-        //Alternate constructor handles whole numbers
+        //If the numerator and denominator are both Fractions.
         myNumer = numerator.getMyNumer() * denominator.getMyDenom();
         myDenom = numerator.getMyDenom() * denominator.getMyNumer();
         simplify();
     }
 
+    private Fraction(double numerator, double denominator) // Only used by sqrt
+    {
+        // A constructor to be used where doubles are given. gcd() only works with integers, so the doubles
+        // are made as big as possible in order to preserve precision.
+        final int largestRoundInt = 1000000000;
+        Fraction f = new Fraction((int) (numerator*largestRoundInt), (int) (denominator*largestRoundInt)); //Highest precision available with ints
+        myNumer = f.getMyNumer();
+        myDenom = f.getMyDenom();
+    }
+
     public Fraction (String s)
     {
+        //Instantiates a Fraction given a string such as "2/3".
         if (s.equals(""))
         {
+            //Where the coefficient is implied (e.g. y = x + 2)
             myNumer = 1;
             myDenom = 1;
         }
@@ -62,24 +77,26 @@ public class Fraction
         }
         else if (s.contains("/"))
         {
+            //Improper fractions
             myNumer = Integer.parseInt(s.substring(0, s.indexOf("/")));
             myDenom = Integer.parseInt(s.substring(s.indexOf("/")+1));
         }
         else
         {
+            //Whole numbers
             myNumer = Integer.parseInt(s);
             myDenom = 1;
         }
         simplify();
     }
     //Get Methods
-    public int getMyNumer()
+    int getMyNumer()
     {
 
         return myNumer;
     }
 
-    public int getMyDenom()
+    int getMyDenom()
     {
         return myDenom;
     }
@@ -94,19 +111,13 @@ public class Fraction
         return myNumer + "/" + myDenom;
     }
 
-    public double decimal()
-    {
-        //Converts the fraction to a double
-        return (double) myNumer / myDenom;
-    }
-
     //Equality Method
 
 
-    public boolean equals(Fraction f)
+    boolean equals(Fraction f)
     {
+        //Comparison method
         return myDenom == f.getMyDenom() && myNumer == f.getMyNumer();
-
     }
 
     private void simplify()
@@ -126,21 +137,21 @@ public class Fraction
         }
     }
 
-    public static int gcd(int num1, int num2)
+    static int gcd(int num1, int num2)
     {
         //Returns the greatest common divisor of the integers passed in
         if (num1 % num2 == 0) return num2;
         return gcd(num2, num1%num2);
     }
 
-    public Fraction reciprocal()
+    private Fraction reciprocal()
     {
         //returns the reciprocal of the Fraction
         return new Fraction(myDenom, myNumer);
     }
 
     //Arithmetic Methods
-    public Fraction multiply(Fraction f)
+    Fraction multiply(Fraction f)
     {
         //Multiplies two fractions and returns the result
         int numer = myNumer * f.getMyNumer();
@@ -148,27 +159,27 @@ public class Fraction
         return new Fraction(numer, denom);
     }
 
-    public Fraction multiply(int i)
+    Fraction multiply(int i)
     {
-        //Multiplies two fractions and returns the result
+        //Multiplies a fraction with an integer and returns the result
         int numer = myNumer * i;
         return new Fraction(numer, myDenom);
     }
 
-    public Fraction divide(Fraction f)
+    Fraction divide(Fraction f)
     {
         //Divides one fraction by another and returns the result
         return multiply(f.reciprocal());
     }
 
-    public Fraction divide(int i)
+    Fraction divide(int i)
     {
-        //Multiplies two fractions and returns the result
+        //Divides one fraction by an int and returns the result
         int denom = myDenom * i;
         return new Fraction(myNumer, denom);
     }
 
-    public Fraction add(Fraction f)
+    Fraction add(Fraction f)
     {
         //Adds two fractions together and returns the result
         if (myDenom == f.getMyDenom())
@@ -183,12 +194,13 @@ public class Fraction
         }
     }
 
-    public int toInt()
+    int toInt()
     {
+        //Converts a Fraction into an integer where necessary (for instance in graphing).
         return myNumer / myDenom;
     }
 
-    public Fraction subtract(Fraction f)
+    Fraction subtract(Fraction f)
     {
         //Subtracts one fraction from another and returns the result.
         if (myDenom == f.getMyDenom())
@@ -202,23 +214,36 @@ public class Fraction
             return new Fraction(numer, denom);
         }
     }
-    public Fraction subtract(int i)
+    Fraction subtract(int i)
     {
-        //Subtracts one fraction from another and returns the result.
+        //Subtracts an int from a fraction and returns the result.
         return new Fraction(myNumer - i * myDenom, myDenom);
     }
-    public Fraction add(int i)
+    Fraction add(int i)
     {
-        //Subtracts one fraction from another and returns the result.
+        //Adds one fraction with an int and returns the result.
         return new Fraction(myNumer + i * myDenom, myDenom);
     }
-    public boolean isOne()
+    boolean isOne()
     {
-        if (Math.abs(myDenom) == 1 && Math.abs(myNumer) == 1)
-        {
-            return true;
-        }
-        return false;
+        //Determines whether a Fraction is equal to one or negative one (for display purposes
+        // in certain equations).
+        return Math.abs(myDenom) == 1 && Math.abs(myNumer) == 1;
+    }
+    public double toDouble()
+    {
+        return 1.*myNumer/myDenom;
+    }
+
+    Fraction sqrt()
+    {
+        return new Fraction(Math.sqrt(myNumer), Math.sqrt(myDenom));
+    }
+    boolean isLessThan(int i)
+    {
+        //Compares the fraction with an integer and returns the result.
+        return myNumer/myDenom < i;
     }
 
 }
+
