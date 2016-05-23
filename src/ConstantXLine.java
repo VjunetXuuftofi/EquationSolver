@@ -4,16 +4,16 @@
  * Thomas Woodside
  * Stores information for equations of lines where the x coordinate is constant.
  */
-class ConstantXLine
+class ConstantXLine extends Form
 {
     private Fraction x;
 
-    Fraction getX()
+    public Fraction getX()
     {
         return x;
     }
 
-    ConstantXLine(Fraction x)
+    public ConstantXLine(Fraction x)
     {
         //Only one data member to assign : the constant x coordinate.
         this.x = x;

@@ -5,7 +5,7 @@
  * A class to store information of parabolas in vertex form:
  * y = m(x-h)^2 + k
  */
-public class VertexFormParabola
+public class VertexFormParabola extends Form
 {
     private Fraction x;
     private Fraction k;
@@ -22,7 +22,7 @@ public class VertexFormParabola
     {
         Fraction A = m;
         Fraction B = x.multiply(2).multiply(m);
-        Fraction C = x.multiply(x).add(k);
+        Fraction C = x.multiply(x).multiply(m).add(k);
         return new StandardFormParabola(A, B, C);
     }
 
@@ -42,22 +42,21 @@ public class VertexFormParabola
     {
         String formattedx = x.toString();
         String formattedk = k.toString();
-        if (x.isOne())
-        {
-            formattedx = x.getMyNumer() < 0 ? "-" + "" : "";
-        }
-        if (k.isOne())
-        {
-            formattedk = k.getMyNumer() < 0 ? "-" + "" : "";
-        }
         if (x.getMyNumer() > 0)
         {
             formattedx = "+" + formattedx;
+        } else if (x.getMyNumer() == 0)
+        {
+            formattedx = "";
         }
         if (k.getMyNumer() > 0)
         {
             formattedk = "+" + formattedk;
+        } else if (k.getMyNumer() == 0)
+        {
+            formattedk = "";
         }
-        return "y=" + m + "(x" + formattedx + ")" + formattedk;
+
+        return "y=" + m + "(x" + formattedx + ")^2" + formattedk;
     }
 }

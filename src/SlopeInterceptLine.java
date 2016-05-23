@@ -5,7 +5,8 @@
  * A class to store information of lines in slope-intercept form:
  * y = mx + b
  */
-public class SlopeInterceptLine {
+public class SlopeInterceptLine extends Form
+{
     private Fraction m;
     private Fraction b;
 
@@ -35,6 +36,7 @@ public class SlopeInterceptLine {
         try
         {
             gcd = Fraction.gcd(A.getMyNumer(), C.getMyNumer());
+            gcd = Fraction.gcd(gcd, tomultiply);
         } catch (ArithmeticException e)
         {
             //For cases when the y intercept (b) is 0.
@@ -57,12 +59,15 @@ public class SlopeInterceptLine {
         String formattedb = b.toString();
         if (m.isOne())
         {
-            formattedm = m.getMyNumer() < 0 ? "-" + "" : "";
+            formattedm = m.getMyNumer() < 0 ? " - " : "";
         }
         if (b.getMyNumer() > 0)
         {
-            formattedb = "+" + formattedb;
+            formattedb = " + " + formattedb;
+        } else if (b.getMyNumer() == 0)
+        {
+            formattedb = "";
         }
-        return "y=" + formattedm + "x" + formattedb;
+        return "y = " + formattedm + "x" + formattedb;
     }
 }
